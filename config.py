@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 
 def get_config(file_name,section):
+    
     file_loc=fr"C:/Users/Lenovo/Desktop/miscellenious_problems-main/Schema/{file_name}"
     parser = ConfigParser()
     parser.read(file_loc)

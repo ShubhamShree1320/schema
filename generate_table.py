@@ -7,8 +7,6 @@ def create_table_from_yaml(yaml_file, table_name):
         schema = yaml.safe_load(file)
     columns = schema["columns"]
     columns_sorted = sorted(columns, key=lambda col: col['position'])
-
-    # Generate column definitions
     column_definitions = []
     for column in columns_sorted:
         col_def = f"{column['name']} {column['type']}"
@@ -18,18 +16,12 @@ def create_table_from_yaml(yaml_file, table_name):
             col_def += f" DEFAULT {column['default']}"
         column_definitions.append(col_def)
 
-    # Create SQL statement with sequence for auto-incrementing primary key
-    create_sequence_sql = f"CREATE SEQUENCE {table_name}_customer_id_seq;"
     create_table_sql = "CREATE TABLE " + table_name + " (\n  " + ",\n  ".join(column_definitions) + "\n);"
-    # Execute the SQL statements in PostgreSQL
+
     try:
         conn = psycopg2.connect(**get_config("database.ini", "postgresql_aws"))
         cursor = conn.cursor()
-        
-        # Create sequence first
-        cursor.execute(create_sequence_sql)
-        
-        # Then create table
+
         cursor.execute(create_table_sql)
         
         conn.commit()
